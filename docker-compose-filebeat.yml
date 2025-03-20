@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  filebeat:
+    image: elastic/filebeat:8.5.1
+    deploy:
+      mode: global
+    networks:
+      - elk_network
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/osboxes/elk-app/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    command: ["filebeat", "-e"]
+
+networks:
+  elk_network:
+    external: true
