@@ -44,6 +44,7 @@ services:
       - coinswarmnet
     depends_on:
       - elasticsearch
+      - coinswarmnet
 
 volumes:
   elastic_data:
