@@ -45,6 +45,17 @@ services:
     depends_on:
       - elasticsearch
       - coinswarmnet
+      
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - monitoring
+    deploy:
+      replicas: 1
 
 volumes:
   elastic_data:
