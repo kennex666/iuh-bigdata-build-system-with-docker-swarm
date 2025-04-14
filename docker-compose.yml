@@ -19,7 +19,7 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash:8.5.1
     deploy:
-      replicas: 1
+      replicas: 2
     ports:
       - "12201:12201/udp"
     networks:
