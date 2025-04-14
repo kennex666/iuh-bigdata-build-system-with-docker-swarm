@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.1
     deploy:
       replicas: 1
     ports:
@@ -17,7 +17,7 @@ services:
       - coinswarmnet
 
   logstash:
-    image: docker.elastic.co/logstash/logstash:8.5.0
+    image: docker.elastic.co/logstash/logstash:8.5.1
     deploy:
       replicas: 1
     ports:
@@ -32,7 +32,7 @@ services:
       - elasticsearch
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.5.0
+    image: docker.elastic.co/kibana/kibana:8.5.1
     environment:
       - "ELASTICSEARCH_HOSTS=http://elasticsearch:9200"
     deploy:
