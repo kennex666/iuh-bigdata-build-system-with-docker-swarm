@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    dns_sd_configs:
+      - names: ['tasks.sub_monitoring_node-exporter']
+        type: A
+        port: 9100
+        refresh_interval: 15s
+
+  - job_name: 'cadvisor'
+    dns_sd_configs:
+      - names: ['tasks.sub_monitoring_cadvisor']
+        type: A
+        port: 8080
+        refresh_interval: 15s

@@ -1,0 +1,120 @@
+{
+  "title": "Telegraf Node Overview (Flux)",
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "type": "timeseries",
+      "title": "CPU Usage (%)",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "-"
+          },
+          "query": "from(bucket: \"osboxes\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"cpu\" and r._field == \"usage_system\" and r.cpu == \"cpu-total\")",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "type": "timeseries",
+      "title": "Memory Used (%)",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "-"
+          },
+          "query": "from(bucket: \"osboxes\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"mem\" and r._field == \"used_percent\")",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "type": "timeseries",
+      "title": "Swap Used (%)",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "-"
+          },
+          "query": "from(bucket: \"osboxes\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"swap\" and r._field == \"used_percent\")",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "type": "timeseries",
+      "title": "Disk Used (%)",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "-"
+          },
+          "query": "from(bucket: \"osboxes\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"disk\" and r._field == \"used_percent\" and r.path == \"/\")",
+          "refId": "D"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "type": "timeseries",
+      "title": "System Uptime (s)",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "-"
+          },
+          "query": "from(bucket: \"osboxes\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"system\" and r._field == \"uptime\")",
+          "refId": "E"
+        }
+      ]
+    }
+  ],
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "schemaVersion": 30,
+  "version": 1,
+  "refresh": "30s"
+}

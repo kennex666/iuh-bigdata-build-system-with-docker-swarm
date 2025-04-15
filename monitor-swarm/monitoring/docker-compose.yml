@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:latest
+    networks:
+      - monitoring_network
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      replicas: 1
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=osboxes
+      - DOCKER_INFLUXDB_INIT_BUCKET=osboxes
+      - DOCKER_INFLUXDB_INIT_TOKEN=my-init-token-omggggg
+      - INFLUXD_HTTP_BIND_ADDRESS=0.0.0.0:8086
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=myadmintoken
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  prometheus:
+    image: prom/prometheus:latest
+    networks:
+      - monitoring_network
+    ports:
+      - "9090:9090"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      replicas: 1
+    configs:
+      - source: prometheus_config
+        target: /etc/prometheus/prometheus.yml
+    volumes:
+      - prometheus_data:/prometheus
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    dns:
+    - 8.8.8.8
+    - 8.8.4.4
+
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - monitoring_network
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      replicas: 1
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  telegraf:
+    image: telegraf:latest
+    user: root                     # 👈 THÊM DÒNG NÀY!
+    networks:
+      - monitoring_network
+    configs:
+      - source: telegraf_config
+        target: /etc/telegraf/telegraf.conf
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro   # 👈 Cần để đọc docker info
+    deploy:
+      mode: global     # 👈 QUAN TRỌNG: mỗi node chạy 1 container Telegraf
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 20
+        window: 60s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://influxdb:8086/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+      start_period: 30s
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 127.0.0.11
+
+networks:
+  monitoring_network:
+    external: true
+
+volumes:
+  influxdb_data:
+  grafana_data:
+  prometheus_data:    # Thêm volume này để lưu dữ liệu Prometheus
+
+  
+configs:
+  prometheus_config:  # Thêm config cho Prometheus
+    external: true
+  telegraf_config:
+    external: true     # 👈 Thêm dòng này
