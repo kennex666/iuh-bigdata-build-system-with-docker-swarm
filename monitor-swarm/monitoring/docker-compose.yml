@@ -74,6 +74,9 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_SERVER_ROOT_URL=http://grafana:3000/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
+    configs:
+      - source: grafana_config
+        target: /etc/grafana/grafana.ini
 
   telegraf:
     image: telegraf:latest
@@ -117,4 +120,6 @@ configs:
   prometheus_config:  # Thêm config cho Prometheus
     external: true
   telegraf_config:
+    external: true     # 👈 Thêm dòng này
+  grafana_config:
     external: true     # 👈 Thêm dòng này
