@@ -1,0 +1,31 @@
+
+version: '3.8'
+
+services:
+  reverse-proxy:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/nginx.conf
+    networks:
+      - proxy
+      - monitoring_network
+      - elk_elk_network
+      - coinswarmnet
+
+configs:
+  nginx_conf:
+    file: ./nginx.conf
+
+networks:
+  proxy:
+    driver: overlay
+    attachable: true
+  monitoring_network:
+    external: true
+  elk_elk_network:
+    external: true
+  coinswarmnet:
+    external: true
