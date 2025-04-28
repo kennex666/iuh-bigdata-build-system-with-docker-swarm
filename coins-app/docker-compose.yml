@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  rng:
+    build: rng
+    ports:
+    - "8001:80"
+    container_name: rng
+    networks:
+      - mynet
+
+  hasher:
+    build: hasher
+    ports:
+    - "8002:80"
+    container_name: hasher
+    networks:
+      - mynet
+
+  webui:
+    build: webui
+    ports:
+    - "8000:80"
+    volumes:
+    - "./webui/files/:/files/"
+    container_name: webui
+    networks:
+      - mynet
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - mynet
+
+  worker:
+    build: worker
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    name: mrnamnet
+    driver: bridge
+
